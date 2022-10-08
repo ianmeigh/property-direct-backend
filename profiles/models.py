@@ -16,8 +16,8 @@ class Profile(models.Model):
     name = models.TextField(max_length=50, blank=True)
     description = models.TextField(blank=True)
     email = models.CharField(max_length=50, blank=True)
-    telephone_landline = models.IntegerField(blank=True)
-    telephone_mobile = models.IntegerField(blank=True)
+    telephone_landline = models.CharField(max_length=11, blank=True)
+    telephone_mobile = models.CharField(max_length=11, blank=True)
     image = models.ImageField(
         upload_to="images/", default="../default_profile_hthtjb.jpg"
     )
