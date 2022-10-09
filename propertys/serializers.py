@@ -1,7 +1,11 @@
+from property_direct_api.exceptions import (
+    ExternalAPIUnavailable,
+    PostCodeInvalid,
+)
 from rest_framework import serializers
 
 from .models import Property
-from .utils import validate_property_image
+from .utils import get_postcode_details, validate_property_image
 
 
 class PropertySerializer(serializers.ModelSerializer):
@@ -28,6 +32,20 @@ class PropertySerializer(serializers.ModelSerializer):
     def validate_epc(self, value):
         valid_image = validate_property_image(value)
         return valid_image
+
+    def validate_postcode(self, value):
+        try:
+            get_postcode_details(value)
+        except PostCodeInvalid:
+            raise serializers.ValidationError(
+                "Please enter a valid UK postcode"
+            )
+        except ExternalAPIUnavailable:
+            raise serializers.ValidationError(
+                "Postcode verification service temporarily unavailable, "
+                "please report this and try again later."
+            )
+        return value.lower()
 
     class Meta:
         model = Property
