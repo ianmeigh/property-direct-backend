@@ -43,8 +43,13 @@ MEDIA_URL = "/media/"
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 
-# Application definition
+# Django REST Framework Configuration
+REST_FRAMEWORK = {
+    "EXCEPTION_HANDLER": "property_direct_api.exception_handler.custom_exception_handler"
+}
 
+
+# Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
