@@ -25,3 +25,14 @@ class IsProfileOwnerOrViewingSellerProfile(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS and obj.owner.is_seller:
             return True
         return obj.owner == request.user
+
+
+class IsSeller(permissions.BasePermission):
+    """Custom Permission to restrict view to only Users who are Sellers"""
+
+    def has_permission(self, request, view):
+        if request.user.is_anonymous:
+            return False
+        elif request.user.is_seller:
+            return True
+        return False
