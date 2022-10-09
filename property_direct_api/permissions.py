@@ -11,7 +11,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         return obj.owner == request.user
 
 
-class IsOwnerOrViewingSeller(permissions.BasePermission):
+class IsProfileOwnerOrViewingSellerProfile(permissions.BasePermission):
     """Custom permissions to determine profile retrieve and update behavior.
 
     - Non-Seller users profiles are private and won't be visible on 'GET'
