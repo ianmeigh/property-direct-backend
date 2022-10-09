@@ -43,8 +43,8 @@ class Property(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE
     )
     property_name = models.CharField(max_length=35, null=True, blank=True)
-    property_number = models.PositiveIntegerField()
-    street_name = models.CharField(max_length=35, null=True, blank=True)
+    property_number = models.PositiveIntegerField(null=True, blank=True)
+    street_name = models.CharField(max_length=35)
     locality = models.CharField(max_length=60)
     city = models.CharField(max_length=60)
     postcode = models.CharField(max_length=8)
