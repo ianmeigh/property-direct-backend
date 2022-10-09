@@ -9,7 +9,11 @@ from .utils import get_postcode_details, validate_property_image
 
 
 class PropertySerializer(serializers.ModelSerializer):
-    """Property Serializer."""
+    """Property Serializer.
+
+    Used with list view, as distance calculation (performed in
+    PropertySearchSerializer) only required for search results.
+    """
 
     owner = serializers.ReadOnlyField(source="owner.username")
     is_owner = serializers.SerializerMethodField()

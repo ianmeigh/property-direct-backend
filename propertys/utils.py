@@ -33,17 +33,23 @@ def get_postcode_details(postcode):
     """Fetches postcode information from external API (e.g. Longitude,
     Latitude).
 
-    - External API used as validation method for user defined postcode as it
-      raises custom exceptions.
-    - External API URL: https://api.postcodes.io/
+    - External API URL: https://api.postcodes.io/.
+
+    Args:
+        postcode (string): Postcode information.
+
+    Raises:
+        PostCodeInvalid: Raised when postcode invalid.
+        ExternalAPIUnavailable: Raised when external API unavailable.
+
+    Returns:
+        dict: Postcode information from external API.
     """
     api_response = requests.get(
         f"https://api.postcodes.io/postcodes/{postcode}"
     )
     response_obj = api_response.json()
 
-    if response_obj["status"] == 200:
-        return response_obj["result"]
     if response_obj["status"] == 404 and (
         response_obj["error"] == "Postcode not found"
         or response_obj["error"] == "Invalid postcode"
@@ -55,4 +61,4 @@ def get_postcode_details(postcode):
     ):
         raise ExternalAPIUnavailable
 
-    return response_obj
+    return response_obj["result"]
