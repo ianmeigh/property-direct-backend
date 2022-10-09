@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from .models import Property
+from .utils import validate_property_image
 
 
 class PropertySerializer(serializers.ModelSerializer):
@@ -15,6 +16,18 @@ class PropertySerializer(serializers.ModelSerializer):
     def get_is_owner(self, obj):
         request = self.context["request"]
         return request.user == obj.owner
+
+    def validate_image_hero(self, value):
+        valid_image = validate_property_image(value)
+        return valid_image
+
+    def validate_floorplan(self, value):
+        valid_image = validate_property_image(value)
+        return valid_image
+
+    def validate_epc(self, value):
+        valid_image = validate_property_image(value)
+        return valid_image
 
     class Meta:
         model = Property
