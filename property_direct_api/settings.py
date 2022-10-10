@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     "accounts",
     "profiles",
     "propertys",
+    "notes",
 ]
 
 MIDDLEWARE = [
