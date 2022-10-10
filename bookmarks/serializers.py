@@ -9,7 +9,7 @@ from .models import Bookmark
 class BookmarkSerializer(serializers.ModelSerializer):
     """Bookmark Serializer
 
-    Used with list view.
+    Used with list and detail view.
     """
 
     owner = serializers.ReadOnlyField(source="owner.username")
