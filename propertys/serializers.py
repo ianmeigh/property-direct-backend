@@ -1,3 +1,4 @@
+from haversine import Unit, haversine
 from property_direct_api.exceptions import (
     ExternalAPIUnavailable,
     PostCodeInvalid,
@@ -83,3 +84,39 @@ class PropertySerializer(serializers.ModelSerializer):
             "updated_at",
         ]
         read_only_fields = ("longitude", "latitude")
+
+
+class PropertySearchSerializer(PropertySerializer):
+    """Property Search Serializer.
+
+    Used with list view when a postcode is provided as a query parameter. Uses
+    the longitude and latitude of 2 points to calculate the distance between
+    them and adds this to the serialized data.
+    """
+
+    distance = serializers.SerializerMethodField()
+
+    def get_distance(self, obj):
+        """Calculate the distance between 2 points (using longitude and
+        latitude)
+
+        Make use of the Haversine Formula as implemented in the package
+        "haversine" (https://github.com/mapado/haversine).
+        """
+        point_of_originc_coords = (
+            self.context["point_of_origin_lon"],
+            self.context["point_of_origin_lat"],
+        )
+
+        property_coords = (obj.longitude, obj.latitude)
+
+        distance = haversine(
+            point_of_originc_coords, property_coords, unit=Unit.MILES
+        )
+        return distance
+
+    class Meta:
+        model = Property
+        fields = PropertySerializer.Meta.fields + [
+            "distance",
+        ]

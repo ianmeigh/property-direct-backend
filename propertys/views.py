@@ -8,14 +8,12 @@ from rest_framework.generics import (
 )
 
 from .models import Property
-from .serializers import PropertySerializer
+from .serializers import PropertySearchSerializer, PropertySerializer
 from .utils import convert_radius_to_float, get_postcode_details
 
 
 class PropertyListView(ListAPIView):
     """Property List View"""
-
-    serializer_class = PropertySerializer
 
     # Class variables to hold query information
     search_point_of_origin_lat = ""
@@ -106,6 +104,35 @@ class PropertyListView(ListAPIView):
         else:
             queryset = Property.objects.all()
         return queryset
+
+    # CREDIT: Adapted from Pass extra arguments to Serializer Class in Django
+    #         Rest Framework.
+    # AUTHOR: M.Void - StackOverflow
+    # URL:    https://stackoverflow.com/a/38723709
+    def get_serializer_context(self):
+        """Update the context passed to the serializer.
+
+        Include the longitude and latitude of the search's point of origin
+        (POO), so the distance from the POO can be calculated for each object
+        in the serializer.
+        """
+        context = super(PropertyListView, self).get_serializer_context()
+        if self.query_param_postcode:
+            context["point_of_origin_lat"] = self.search_point_of_origin_lat
+            context["point_of_origin_lon"] = self.search_point_of_origin_lon
+        return context
+
+    def get_serializer_class(self, *args, **kwargs):
+        """Return serializer class to be used.
+
+        If query parameters exist for an area search, then use the serializer
+        that calculates distance from the search's point of origin.
+        """
+        if bool(self.query_param_postcode):
+            serializer_class = PropertySearchSerializer  # inc distance
+        else:
+            serializer_class = PropertySerializer  # no distance
+        return serializer_class
 
 
 class PropertyCreateView(CreateAPIView):
