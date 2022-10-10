@@ -2,6 +2,7 @@ import requests
 from property_direct_api.exceptions import (
     ExternalAPIUnavailable,
     PostCodeInvalid,
+    RadiusInvalid,
 )
 from rest_framework import serializers
 
@@ -62,3 +63,22 @@ def get_postcode_details(postcode):
         raise ExternalAPIUnavailable
 
     return response_obj["result"]
+
+
+def convert_radius_to_float(input_string):
+    """Type casts input string to a float.
+
+    Args:
+        input_string (string): Input parameter.
+
+    Raises:
+        RadiusInvalid: Custom API Exception.
+
+    Returns:
+        float: Explicitly converted input.
+    """
+    try:
+        radius_float = round(float(input_string), 1)
+    except ValueError:
+        raise RadiusInvalid
+    return radius_float

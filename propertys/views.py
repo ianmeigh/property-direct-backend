@@ -1,3 +1,5 @@
+from math import cos, pi
+
 from property_direct_api.permissions import IsOwnerOrReadOnly, IsSeller
 from rest_framework.generics import (
     CreateAPIView,
@@ -7,20 +9,110 @@ from rest_framework.generics import (
 
 from .models import Property
 from .serializers import PropertySerializer
-from .utils import get_postcode_details
+from .utils import convert_radius_to_float, get_postcode_details
 
 
 class PropertyListView(ListAPIView):
     """Property List View"""
 
-    queryset = Property.objects.all()
     serializer_class = PropertySerializer
+
+    # Class variables to hold query information
+    search_point_of_origin_lat = ""
+    search_point_of_origin_lon = ""
+    query_param_postcode = ""
+    query_param_radius = ""
+    postcode = ""
+
+    def initial(self, request, *args, **kwargs):
+        """Performs initial checks for search functionality
+
+        - Checks for query parameters of 'postcode' and 'radius'.
+        - If 'postcode' query parameter is populated, validate and geocode
+        - If 'radius' is present, convert to float to validate, otherwise set
+          to 0.5
+        """
+        # Set Class instance variables with query parameters or fallback
+        # values
+        self.query_param_postcode = self.request.query_params.get(
+            "postcode", ""
+        )
+        self.query_param_radius = self.request.query_params.get("radius", "")
+
+        # Validate and Geocode Postcode
+        if self.query_param_postcode:
+            query_postcode_details = get_postcode_details(
+                self.query_param_postcode
+            )
+            self.search_point_of_origin_lat = query_postcode_details[
+                "latitude"
+            ]
+            self.search_point_of_origin_lon = query_postcode_details[
+                "longitude"
+            ]
+        # Validate or Set Radius
+        if self.query_param_radius:
+            self.query_param_radius = convert_radius_to_float(
+                self.query_param_radius
+            )
+        else:
+            self.query_param_radius = 0.5
+        return super().initial(request, *args, **kwargs)
+
+    def get_queryset(self):
+        """Filters the queryset using a bounding box
+
+        If a 'postcode' and 'radius' are supplied as query parameters, the
+        minimum and maximum longitude and latitude are calculated to form a
+        bounding box. This is then used to filter property objects and form the
+        queryset.
+        """
+
+        if self.query_param_postcode:
+            # CREDIT:   Adapted from "Selecting points within a bounding
+            #           circle"
+            # AUTHOR:   Chris Veness
+            # URL:      https://www.movable-type.co.uk/scripts/latlong-db.html
+
+            R = 3958.8  # Earth's mean radius in Miles
+
+            search_area_min_lat = self.search_point_of_origin_lat - (
+                self.query_param_radius / R * 180 / pi
+            )
+            search_area_max_lat = self.search_point_of_origin_lat + (
+                self.query_param_radius / R * 180 / pi
+            )
+            search_area_min_lon = self.search_point_of_origin_lon - (
+                self.query_param_radius
+                / R
+                * 180
+                / pi
+                / cos(self.search_point_of_origin_lat * pi / 180)
+            )
+            search_area_max_lon = self.search_point_of_origin_lon + (
+                self.query_param_radius
+                / R
+                * 180
+                / pi
+                / cos(self.search_point_of_origin_lat * pi / 180)
+            )
+
+            queryset = Property.objects.filter(
+                latitude__gte=search_area_min_lat,
+                latitude__lte=search_area_max_lat,
+                longitude__gte=search_area_min_lon,
+                longitude__lte=search_area_max_lon,
+            )
+        else:
+            queryset = Property.objects.all()
+        return queryset
 
 
 class PropertyCreateView(CreateAPIView):
     """Property Create View
 
-    Custom permissions class to restrict property creation (to only Sellers).
+    - Custom permissions class to restrict property creation (to only Sellers).
+    - Return different Serializer content based on query parameters.
     """
 
     serializer_class = PropertySerializer
@@ -30,8 +122,8 @@ class PropertyCreateView(CreateAPIView):
     def perform_create(self, serializer):
         """Add extra information before the object is saved (created).
 
-        - Retrieve and add the Longitude and Latitude information for the
-          postcode.
+        - Fetch postcode information and add the Longitude and Latitude
+          of the postcode before the model object is created.
         - Add an owner before the model object is created.
         """
         postcode = serializer.validated_data["postcode"]
@@ -53,8 +145,9 @@ class PropertyDetailView(RetrieveUpdateDestroyAPIView):
     def perform_update(self, serializer):
         """Add extra information before the object is saved (updated).
 
-        - Retrieves the Longitude and Latitude information if the
-          postcode has been updated.
+        - Fetch postcode information and add the Longitude and Latitude of the
+          postcode to the model object instance, if the postcode has been
+          updated.
         """
         # Get the postcode from the serializer
         updated_postcode = serializer.validated_data["postcode"]
