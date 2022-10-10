@@ -33,3 +33,12 @@ class NoteSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
+
+
+class NoteDetailSerializer(NoteSerializer):
+    """Note Detail Serializer
+
+    Used with detail view.
+    """
+
+    property = serializers.ReadOnlyField(source="property.id")
