@@ -22,4 +22,5 @@ urlpatterns = [
     path("", include("profiles.urls")),
     path("", include("propertys.urls")),
     path("", include("notes.urls")),
+    path("", include("bookmarks.urls")),
 ]
