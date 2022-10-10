@@ -1,5 +1,6 @@
 from math import cos, pi
 
+# from django_filters.rest_framework import DjangoFilterBackend
 from property_direct_api.permissions import IsOwnerOrReadOnly, IsSeller
 from rest_framework.generics import (
     CreateAPIView,
@@ -14,6 +15,17 @@ from .utils import convert_radius_to_float, get_postcode_details
 
 class PropertyListView(ListAPIView):
     """Property List View"""
+
+    # Property filters
+    filterset_fields = {
+        "price": ["gte", "lte"],
+        "property_type": ["exact"],
+        "num_bedrooms": ["gte", "lte"],
+        "num_bathrooms": ["gte", "lte"],
+        "has_garden": ["exact"],
+        "has_parking": ["exact"],
+        "is_sold_stc": ["exact"],
+    }
 
     # Class variables to hold query information
     search_point_of_origin_lat = ""
