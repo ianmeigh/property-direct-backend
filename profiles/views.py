@@ -10,8 +10,8 @@ from .serializers import ProfileSerializer, ProfileSerializerAuthenticated
 class ProfileListView(ListAPIView):
     """Profile List View
 
-    Only display seller profiles to keep standard user profiles private.
-    Return different Serializer content based on authentication state.
+    - Only display seller profiles to keep standard user profiles private.
+    - Return different Serializer content based on authentication state.
     """
 
     queryset = Profile.objects.all().filter(owner__is_seller=True)
@@ -30,8 +30,8 @@ class ProfileListView(ListAPIView):
 class ProfileDetailView(RetrieveUpdateAPIView):
     """Profile Detail (Retrieve and Update) View
 
-    Custom permissions class to control profile privacy (and permissions).
-    Return different Serializer content based on authentication state.
+    - Custom permissions class to control profile privacy (and permissions).
+    - Return different Serializer content based on authentication state.
     """
 
     queryset = Profile.objects.all()

@@ -34,7 +34,7 @@ class NoteListView(ListCreateAPIView):
 
 
 class NoteDetailView(RetrieveUpdateDestroyAPIView):
-    """Detail (Retrieve, Update and Destroy) View
+    """Note Detail (Retrieve, Update and Destroy) View
 
     - Retrieve a Note by id and allow the owner to update or delete the
     object.

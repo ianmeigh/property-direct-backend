@@ -175,7 +175,11 @@ class PropertyCreateView(CreateAPIView):
 
 
 class PropertyDetailView(RetrieveUpdateDestroyAPIView):
-    """Property Detail (Retrieve, Update and Destroy) View"""
+    """Property Detail (Retrieve, Update and Destroy) View
+
+    - Retrieve a property by id and allow the owner to update or delete the
+      object.
+    """
 
     serializer_class = PropertySerializer
     permission_classes = [IsOwnerOrReadOnly]

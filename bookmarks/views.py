@@ -1,9 +1,6 @@
 from property_direct_api.permissions import IsOwnerOrReadOnly
 from rest_framework import permissions
-from rest_framework.generics import (
-    ListCreateAPIView,
-    RetrieveUpdateDestroyAPIView,
-)
+from rest_framework.generics import ListCreateAPIView, RetrieveDestroyAPIView
 
 from .models import Bookmark
 from .serializers import BookmarkSerializer
@@ -34,10 +31,10 @@ class BookmarkListView(ListCreateAPIView):
         serializer.save(owner=self.request.user)
 
 
-class BookmarkDetailView(RetrieveUpdateDestroyAPIView):
+class BookmarkDetailView(RetrieveDestroyAPIView):
     """Bookmark Detail (Retrieve, Update and Destroy) View
 
-    - Retrieve a Bookmark by id and allow the owner to update or delete the
+    - Retrieve a Bookmark by id and allow the owner to view and delete the
     object.
     """
 

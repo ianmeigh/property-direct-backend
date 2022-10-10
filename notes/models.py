@@ -3,7 +3,7 @@ from django.db import models
 from propertys.models import Property
 
 
-# CREDIT: Adapted from the Code Institute DRF Tutorial Project
+# CREDIT: Class from Code Institute DRF Tutorial Project with minor adaptations
 # URL: https://github.com/Code-Institute-Solutions/drf-api
 class Note(models.Model):
     """Note model.
