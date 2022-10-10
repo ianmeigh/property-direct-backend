@@ -1,4 +1,6 @@
-from property_direct_api.permissions import IsOwnerOrViewingSeller
+from property_direct_api.permissions import (
+    IsProfileOwnerOrViewingSellerProfile,
+)
 from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
 
 from .models import Profile
@@ -33,7 +35,7 @@ class ProfileDetailView(RetrieveUpdateAPIView):
     """
 
     queryset = Profile.objects.all()
-    permission_classes = [IsOwnerOrViewingSeller]
+    permission_classes = [IsProfileOwnerOrViewingSellerProfile]
 
     def get_serializer_class(self):
         """Return different serializers based on authentication status.

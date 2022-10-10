@@ -43,8 +43,16 @@ MEDIA_URL = "/media/"
 DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 
-# Application definition
+# Django REST Framework Configuration
+REST_FRAMEWORK = {
+    "EXCEPTION_HANDLER": "property_direct_api.exception_handler.custom_exception_handler",
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend"
+    ],
+}
 
+
+# Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -55,8 +63,10 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "cloudinary",
     "rest_framework",
+    "django_filters",
     "accounts",
     "profiles",
+    "propertys",
 ]
 
 MIDDLEWARE = [
