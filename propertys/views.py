@@ -1,6 +1,7 @@
 from math import cos, pi
 
 from django.db.models import Count
+from django_filters.rest_framework import DjangoFilterBackend
 from property_direct_api.permissions import IsOwnerOrReadOnly, IsSeller
 from rest_framework.filters import OrderingFilter
 from rest_framework.generics import (
@@ -9,6 +10,7 @@ from rest_framework.generics import (
     RetrieveUpdateDestroyAPIView,
 )
 
+from .filters import CustomPropertyFilters
 from .models import Property
 from .serializers import PropertySearchSerializer, PropertySerializer
 from .utils import convert_radius_to_float, get_postcode_details
@@ -17,23 +19,12 @@ from .utils import convert_radius_to_float, get_postcode_details
 class PropertyListView(ListAPIView):
     """Property List View"""
 
-    filter_backends = [OrderingFilter]
-
+    filter_backends = [OrderingFilter, DjangoFilterBackend]
     ordering_fields = [
         "bookmarks_count",
         "bookmarks__created_at",
     ]
-
-    # Property filters
-    filterset_fields = {
-        "price": ["gte", "lte"],
-        "property_type": ["exact"],
-        "num_bedrooms": ["gte", "lte"],
-        "num_bathrooms": ["gte", "lte"],
-        "has_garden": ["exact"],
-        "has_parking": ["exact"],
-        "is_sold_stc": ["exact"],
-    }
+    filterset_class = CustomPropertyFilters
 
     # Class variables to hold query information
     search_point_of_origin_lat = ""

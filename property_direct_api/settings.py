@@ -46,9 +46,6 @@ DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 # Django REST Framework Configuration
 REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "property_direct_api.exception_handler.custom_exception_handler",
-    "DEFAULT_FILTER_BACKENDS": [
-        "django_filters.rest_framework.DjangoFilterBackend"
-    ],
 }
 
 
