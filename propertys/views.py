@@ -1,7 +1,8 @@
 from math import cos, pi
 
-# from django_filters.rest_framework import DjangoFilterBackend
+from django.db.models import Count
 from property_direct_api.permissions import IsOwnerOrReadOnly, IsSeller
+from rest_framework.filters import OrderingFilter
 from rest_framework.generics import (
     CreateAPIView,
     ListAPIView,
@@ -15,6 +16,13 @@ from .utils import convert_radius_to_float, get_postcode_details
 
 class PropertyListView(ListAPIView):
     """Property List View"""
+
+    filter_backends = [OrderingFilter]
+
+    ordering_fields = [
+        "bookmarks_count",
+        "bookmarks__created_at",
+    ]
 
     # Property filters
     filterset_fields = {
@@ -107,14 +115,22 @@ class PropertyListView(ListAPIView):
                 / cos(self.search_point_of_origin_lat * pi / 180)
             )
 
-            queryset = Property.objects.filter(
-                latitude__gte=search_area_min_lat,
-                latitude__lte=search_area_max_lat,
-                longitude__gte=search_area_min_lon,
-                longitude__lte=search_area_max_lon,
+            queryset = (
+                Property.objects.filter(
+                    latitude__gte=search_area_min_lat,
+                    latitude__lte=search_area_max_lat,
+                    longitude__gte=search_area_min_lon,
+                    longitude__lte=search_area_max_lon,
+                )
+                .annotate(
+                    bookmarks_count=Count("bookmarks", distinct=True),
+                )
+                .order_by("-created_at")
             )
         else:
-            queryset = Property.objects.all()
+            queryset = Property.objects.annotate(
+                bookmarks_count=Count("bookmarks", distinct=True),
+            ).order_by("-created_at")
         return queryset
 
     # CREDIT: Adapted from Pass extra arguments to Serializer Class in Django
