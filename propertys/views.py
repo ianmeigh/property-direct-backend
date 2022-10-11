@@ -1,13 +1,16 @@
 from math import cos, pi
 
-# from django_filters.rest_framework import DjangoFilterBackend
+from django.db.models import Count
+from django_filters.rest_framework import DjangoFilterBackend
 from property_direct_api.permissions import IsOwnerOrReadOnly, IsSeller
+from rest_framework.filters import OrderingFilter
 from rest_framework.generics import (
     CreateAPIView,
     ListAPIView,
     RetrieveUpdateDestroyAPIView,
 )
 
+from .filters import CustomPropertyFilters
 from .models import Property
 from .serializers import PropertySearchSerializer, PropertySerializer
 from .utils import convert_radius_to_float, get_postcode_details
@@ -16,16 +19,12 @@ from .utils import convert_radius_to_float, get_postcode_details
 class PropertyListView(ListAPIView):
     """Property List View"""
 
-    # Property filters
-    filterset_fields = {
-        "price": ["gte", "lte"],
-        "property_type": ["exact"],
-        "num_bedrooms": ["gte", "lte"],
-        "num_bathrooms": ["gte", "lte"],
-        "has_garden": ["exact"],
-        "has_parking": ["exact"],
-        "is_sold_stc": ["exact"],
-    }
+    filter_backends = [OrderingFilter, DjangoFilterBackend]
+    ordering_fields = [
+        "bookmarks_count",
+        "bookmarks__created_at",
+    ]
+    filterset_class = CustomPropertyFilters
 
     # Class variables to hold query information
     search_point_of_origin_lat = ""
@@ -107,14 +106,22 @@ class PropertyListView(ListAPIView):
                 / cos(self.search_point_of_origin_lat * pi / 180)
             )
 
-            queryset = Property.objects.filter(
-                latitude__gte=search_area_min_lat,
-                latitude__lte=search_area_max_lat,
-                longitude__gte=search_area_min_lon,
-                longitude__lte=search_area_max_lon,
+            queryset = (
+                Property.objects.filter(
+                    latitude__gte=search_area_min_lat,
+                    latitude__lte=search_area_max_lat,
+                    longitude__gte=search_area_min_lon,
+                    longitude__lte=search_area_max_lon,
+                )
+                .annotate(
+                    bookmarks_count=Count("bookmarks", distinct=True),
+                )
+                .order_by("-created_at")
             )
         else:
-            queryset = Property.objects.all()
+            queryset = Property.objects.annotate(
+                bookmarks_count=Count("bookmarks", distinct=True),
+            ).order_by("-created_at")
         return queryset
 
     # CREDIT: Adapted from Pass extra arguments to Serializer Class in Django
@@ -175,7 +182,11 @@ class PropertyCreateView(CreateAPIView):
 
 
 class PropertyDetailView(RetrieveUpdateDestroyAPIView):
-    """Property Detail (Retrieve, Update and Destroy) View"""
+    """Property Detail (Retrieve, Update and Destroy) View
+
+    - Retrieve a property by id and allow the owner to update or delete the
+      object.
+    """
 
     serializer_class = PropertySerializer
     permission_classes = [IsOwnerOrReadOnly]

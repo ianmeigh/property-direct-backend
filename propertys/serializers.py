@@ -1,3 +1,4 @@
+from bookmarks.models import Bookmark
 from haversine import Unit, haversine
 from property_direct_api.exceptions import (
     ExternalAPIUnavailable,
@@ -19,12 +20,24 @@ class PropertySerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source="owner.username")
     is_owner = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source="owner.profile.id")
+    profile_image = serializers.ReadOnlyField(source="owner.profile.image.url")
+    bookmark_id = serializers.SerializerMethodField()
+    bookmarks_count = serializers.ReadOnlyField()
     longitude = serializers.ReadOnlyField()
     latitude = serializers.ReadOnlyField()
 
     def get_is_owner(self, obj):
         request = self.context["request"]
         return request.user == obj.owner
+
+    def get_bookmark_id(self, obj):
+        user = self.context["request"].user
+        if user.is_authenticated:
+            bookmark = Bookmark.objects.filter(
+                owner=user, property=obj
+            ).first()
+            return bookmark.id if bookmark else None
+        return None
 
     def validate_image_hero(self, value):
         valid_image = validate_property_image(value)
@@ -59,6 +72,7 @@ class PropertySerializer(serializers.ModelSerializer):
             "owner",
             "is_owner",
             "profile_id",
+            "profile_image",
             "property_name",
             "property_number",
             "street_name",
@@ -80,6 +94,8 @@ class PropertySerializer(serializers.ModelSerializer):
             "is_sold_stc",
             "latitude",
             "longitude",
+            "bookmark_id",
+            "bookmarks_count",
             "created_at",
             "updated_at",
         ]
@@ -103,16 +119,22 @@ class PropertySearchSerializer(PropertySerializer):
         Make use of the Haversine Formula as implemented in the package
         "haversine" (https://github.com/mapado/haversine).
         """
-        point_of_originc_coords = (
-            self.context["point_of_origin_lon"],
-            self.context["point_of_origin_lat"],
-        )
+        # Try / Except Block used defensively in the event a future maintainer
+        # calls the search serializer without also passing point of origin
+        # information to the serializer context.
+        try:
+            point_of_origin_coords = (
+                self.context["point_of_origin_lon"],
+                self.context["point_of_origin_lat"],
+            )
 
-        property_coords = (obj.longitude, obj.latitude)
+            property_coords = (obj.longitude, obj.latitude)
 
-        distance = haversine(
-            point_of_originc_coords, property_coords, unit=Unit.MILES
-        )
+            distance = haversine(
+                point_of_origin_coords, property_coords, unit=Unit.MILES
+            )
+        except KeyError:
+            return None
         return distance
 
     class Meta:

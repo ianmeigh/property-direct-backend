@@ -80,7 +80,4 @@ class Property(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return (
-            f"Property ID - {self.id}: {self.street_name}, "
-            f"{self.locality}, {self.city}, {self.postcode}"
-        )
+        return f"{self.street_name, self.locality, self.city, self.postcode}"

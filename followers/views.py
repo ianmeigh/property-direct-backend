@@ -37,7 +37,7 @@ class FollowerListView(ListCreateAPIView):
 class FollowerDetailView(RetrieveDestroyAPIView):
     """Follower Detail (Retrieve, Update and Destroy) View
 
-    - Retrieve a Follower object by id and allow the owner to view or delete
+    - Retrieve a Follower object by id and allow the owner to view and delete
       the object.
     """
 
