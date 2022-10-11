@@ -27,4 +27,4 @@ class Bookmark(models.Model):
         unique_together = ["owner", "property"]
 
     def __str__(self):
-        return f"{self.owner, self.property}"
+        return f"{self.owner.username, self.property}"
