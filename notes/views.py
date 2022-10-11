@@ -1,3 +1,4 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from property_direct_api.permissions import IsOwnerOrReadOnly
 from rest_framework import permissions
 from rest_framework.generics import (
@@ -17,6 +18,8 @@ class NoteListView(ListCreateAPIView):
 
     serializer_class = NoteSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ["property"]
 
     def get_queryset(self):
         """Filter the queryset to display only notes owner by the currently
