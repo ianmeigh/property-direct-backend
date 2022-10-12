@@ -1,4 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from property_direct_api.mixins import IsOwnerQuerysetFilter
 from property_direct_api.permissions import IsOwnerOrReadOnly
 from rest_framework import permissions
 from rest_framework.generics import (
@@ -10,49 +11,33 @@ from .models import Note
 from .serializers import NoteDetailSerializer, NoteSerializer
 
 
-class NoteListView(ListCreateAPIView):
+class NoteListView(IsOwnerQuerysetFilter, ListCreateAPIView):
     """Note List/Create View
 
-    - Only display notes to their owners to keep notes private.
+    - Use IsOwnerQuerysetFilter Mixin to only display notes to their owners
+      to keep notes private.
+    - Create a note if authenticated.
     """
 
+    model = Note
     serializer_class = NoteSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["property"]
-
-    def get_queryset(self):
-        """Filter the queryset to display only notes owner by the currently
-        authenticated User, to keep notes private.
-        """
-        current_user = self.request.user
-        if current_user.is_anonymous:
-            queryset = Note.objects.none()
-        else:
-            queryset = Note.objects.filter(owner=current_user)
-        return queryset
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
 
-class NoteDetailView(RetrieveUpdateDestroyAPIView):
+class NoteDetailView(IsOwnerQuerysetFilter, RetrieveUpdateDestroyAPIView):
     """Note Detail (Retrieve, Update and Destroy) View
 
     - Retrieve a Note by id and allow the owner to update or delete the
-    object.
+      object.
+    - Use IsOwnerQuerysetFilter Mixin to only display notes to their owners
+      to keep notes private.
     """
 
+    model = Note
     serializer_class = NoteDetailSerializer
     permission_classes = [IsOwnerOrReadOnly]
-
-    def get_queryset(self):
-        """Filter the queryset to display only notes owner by the currently
-        authenticated User, to keep notes private.
-        """
-        current_user = self.request.user
-        if current_user.is_anonymous:
-            queryset = Note.objects.none()
-        else:
-            queryset = Note.objects.filter(owner=current_user)
-        return queryset
