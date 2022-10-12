@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from os import environ
 from pathlib import Path
 
+import dj_database_url
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -34,6 +35,14 @@ else:
     DEBUG = False
 
 ALLOWED_HOSTS = environ.get("ALLOWED_HOSTS", "127.0.0.1").split(",")
+
+# CREDIT: CORS_ALLOWED_ORIGINS list adapted from @Johan from the Code Institute
+#         Slack Community.
+if environ.get("DEV_ENVIRONMENT"):
+    CORS_ALLOWED_ORIGINS = [
+        environ.get("CLIENT_ORIGIN"),
+        environ.get("CLIENT_ORIGIN_DEV"),
+    ]
 
 
 # Cloudinary Configuration
@@ -97,6 +106,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "dj_rest_auth.registration",
+    "corsheaders",
     "accounts",
     "profiles",
     "propertys",
@@ -108,6 +118,7 @@ INSTALLED_APPS = [
 SITE_ID = 1
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -141,12 +152,15 @@ WSGI_APPLICATION = "property_direct_api.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if environ.get("DEV_ENVIRONMENT_DATABASE"):
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
+else:
+    DATABASES = {"default": dj_database_url.parse(environ.get("DATABASE_URL"))}
 
 
 # Password validation
