@@ -4,7 +4,7 @@ from .models import Note
 
 
 # CREDIT: Adapted from the Code Institute DRF Tutorial Project
-# URL: https://github.com/Code-Institute-Solutions/drf-api
+# URL:    https://github.com/Code-Institute-Solutions/drf-api
 class NoteSerializer(serializers.ModelSerializer):
     """Note Serializer
 

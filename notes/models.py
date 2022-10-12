@@ -4,7 +4,7 @@ from propertys.models import Property
 
 
 # CREDIT: Class from Code Institute DRF Tutorial Project with minor adaptations
-# URL: https://github.com/Code-Institute-Solutions/drf-api
+# URL:    https://github.com/Code-Institute-Solutions/drf-api
 class Note(models.Model):
     """Note model.
 

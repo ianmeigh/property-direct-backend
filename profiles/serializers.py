@@ -5,7 +5,7 @@ from .models import Profile
 
 
 # CREDIT: Adapted from the Code Institute DRF Tutorial Project
-# URL: https://github.com/Code-Institute-Solutions/drf-api
+# URL:    https://github.com/Code-Institute-Solutions/drf-api
 class ProfileSerializer(serializers.ModelSerializer):
     """Serializer used for anonymous user requests.
 

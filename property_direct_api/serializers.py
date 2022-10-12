@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 
 # CREDIT: Adapted from the Code Institute DRF Tutorial Project
-# URL: https://github.com/Code-Institute-Solutions/drf-api
+# URL:    https://github.com/Code-Institute-Solutions/drf-api
 class CurrentUserSerializer(UserDetailsSerializer):
     """Add user and profile details to the information returned when requesting
     logged in user details."""

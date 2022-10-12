@@ -78,10 +78,10 @@ class PropertyListView(ListAPIView):
         """
 
         if self.query_param_postcode:
-            # CREDIT:   Adapted from "Selecting points within a bounding
-            #           circle"
-            # AUTHOR:   Chris Veness
-            # URL:      https://www.movable-type.co.uk/scripts/latlong-db.html
+            # CREDIT: Adapted from "Selecting points within a bounding
+            #         circle"
+            # AUTHOR: Chris Veness
+            # URL:    https://www.movable-type.co.uk/scripts/latlong-db.html
 
             R = 3958.8  # Earth's mean radius in Miles
 

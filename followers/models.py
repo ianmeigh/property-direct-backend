@@ -3,7 +3,7 @@ from django.db import models
 
 
 # CREDIT: Class from Code Institute DRF Tutorial Project with minor adaptations
-# URL: https://github.com/Code-Institute-Solutions/drf-api
+# URL:    https://github.com/Code-Institute-Solutions/drf-api
 class Follower(models.Model):
     """Follower Model.
 

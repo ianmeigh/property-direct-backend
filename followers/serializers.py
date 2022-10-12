@@ -5,7 +5,7 @@ from .models import Follower
 
 
 # CREDIT: Adapted from the Code Institute DRF Tutorial Project
-# URL: https://github.com/Code-Institute-Solutions/drf-api
+# URL:    https://github.com/Code-Institute-Solutions/drf-api
 class FollowerSerializer(serializers.ModelSerializer):
     """Follower Serializer
 
