@@ -1,9 +1,9 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 
 
 # CREDIT: Adapted from Pyplane and Django Documentation
-# URL: https://www.youtube.com/watch?v=1BeZxMbSZNI
+# URL:    https://www.youtube.com/watch?v=1BeZxMbSZNI
 class CustomUser(AbstractUser):
     """Custom User Model created by extending AbstractUser
 

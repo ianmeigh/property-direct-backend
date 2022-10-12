@@ -1,10 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+
 from .models import CustomUser
 
 
 # CREDIT: Pyplane
-# URL: https://www.youtube.com/watch?v=1BeZxMbSZNI
+# URL:    https://www.youtube.com/watch?v=1BeZxMbSZNI
 class CustomUserAdmin(UserAdmin):
     """Set additional fieldset to display on the change user page of the admin
     portal.

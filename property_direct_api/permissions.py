@@ -2,8 +2,8 @@ from rest_framework import permissions
 
 
 # CREDIT: IsOwnerOrReadOnly Permission Class from the Code Institute DRF
-# Tutorial Project
-# URL: https://github.com/Code-Institute-Solutions/drf-api
+#         Tutorial Project
+# URL:    https://github.com/Code-Institute-Solutions/drf-api
 class IsOwnerOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:

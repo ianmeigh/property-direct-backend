@@ -3,7 +3,7 @@ from django.db import models
 
 
 # CREDIT: Adapted from the Code Institute DRF Tutorial Project
-# URL: https://github.com/Code-Institute-Solutions/drf-api
+# URL:    https://github.com/Code-Institute-Solutions/drf-api
 class Profile(models.Model):
     """Profile model.
 

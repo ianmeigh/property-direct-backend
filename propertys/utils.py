@@ -8,7 +8,7 @@ from rest_framework import serializers
 
 
 # CREDIT: Validation logic adapted from the Code Institute DRF Tutorial Project
-# URL: https://github.com/Code-Institute-Solutions/drf-api
+# URL:    https://github.com/Code-Institute-Solutions/drf-api
 def validate_property_image(file_obj):
     """Validate Image File based on height, width and file size."""
     max_image_width = 4096
