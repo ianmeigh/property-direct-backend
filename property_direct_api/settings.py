@@ -28,12 +28,12 @@ load_dotenv(Path.joinpath(BASE_DIR, ".env"))
 SECRET_KEY = environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if environ.get("DEV_ENVIRONMENT_DEBUG"):
+if environ.get("DEV_ENVIRONMENT"):
     DEBUG = True
 else:
     DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = environ.get("ALLOWED_HOSTS", "127.0.0.1").split(",")
 
 
 # Cloudinary Configuration
@@ -45,7 +45,24 @@ DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 # Django REST Framework Configuration
 REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        (
+            "rest_framework.authentication.SessionAuthentication"
+            if environ.get("DEV_ENVIRONMENT")
+            else "dj_rest_auth.jwt_auth.JWTCookieAuthentication"
+        )
+    ],
     "EXCEPTION_HANDLER": "property_direct_api.exception_handler.custom_exception_handler",
+}
+
+REST_USE_JWT = True  # Enable JWT authentication in dj-rest-auth.
+JWT_AUTH_SECURE = True  # Send over HTTPS only
+JWT_AUTH_COOKIE = "my-app-auth"  # Access token cookie name
+JWT_AUTH_REFRESH_COOKIE = "my-refresh-token"  # Refresh token cookie name
+JWT_AUTH_SAMESITE = "None"
+
+REST_AUTH_SERIALIZERS = {
+    "USER_DETAILS_SERIALIZER": "property_direct_api.serializers.CurrentUserSerializer"
 }
 
 
@@ -61,6 +78,13 @@ INSTALLED_APPS = [
     "cloudinary",
     "rest_framework",
     "django_filters",
+    "rest_framework.authtoken",
+    "dj_rest_auth",
+    "django.contrib.sites",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "dj_rest_auth.registration",
     "accounts",
     "profiles",
     "propertys",
@@ -68,6 +92,8 @@ INSTALLED_APPS = [
     "bookmarks",
     "followers",
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
