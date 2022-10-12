@@ -65,6 +65,10 @@ REST_AUTH_SERIALIZERS = {
     "USER_DETAILS_SERIALIZER": "property_direct_api.serializers.CurrentUserSerializer"
 }
 
+REST_AUTH_REGISTER_SERIALIZERS = {
+    "REGISTER_SERIALIZER": "accounts.serializers.CustomRegisterSerializer",
+}
+
 
 # Application definition
 INSTALLED_APPS = [
