@@ -52,8 +52,15 @@ REST_FRAMEWORK = {
             else "dj_rest_auth.jwt_auth.JWTCookieAuthentication"
         )
     ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
     "EXCEPTION_HANDLER": "property_direct_api.exception_handler.custom_exception_handler",
 }
+
+if not environ.get("DEV_ENVIRONMENT"):
+    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = [
+        "rest_framework.renderers.JSONRenderer",
+    ]
 
 REST_USE_JWT = True  # Enable JWT authentication in dj-rest-auth.
 JWT_AUTH_SECURE = True  # Send over HTTPS only

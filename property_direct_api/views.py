@@ -9,6 +9,17 @@ from .settings import (
 )
 
 
+@api_view()
+def root_route(request):
+    return Response(
+        {
+            "message": "Welcome to the Property Direct API",
+            "documentation": "https://github.com/ianmeigh/property-direct-"
+            "backend",
+        }
+    )
+
+
 # CREDIT: Code from Code Institute DRF Tutorial Project - dj-rest-auth logout
 #         view fix
 # URL:    https://github.com/Code-Institute-Solutions/drf-api
