@@ -198,18 +198,24 @@ class PropertyDetailView(RetrieveUpdateDestroyAPIView):
         - Fetch postcode information and add the Longitude and Latitude of the
           postcode to the model object instance, if the postcode has been
           updated.
+        - If KeyError then PATCH request rather than PUT 'postcode' not updated
+          rather than PUT
         """
-        # Get the postcode from the serializer
-        updated_postcode = serializer.validated_data["postcode"]
 
-        # Get the existing property object
-        obj = serializer.instance
+        try:
+            # Get the postcode from the serializer
+            updated_postcode = serializer.validated_data["postcode"]
 
-        # If the postcode from the serializer doesn't match doesn't match the
-        # property objects current postcode, a change has been made and the
-        # longitude and latitude should be updated.
-        if updated_postcode != obj.postcode:
-            result = get_postcode_details(updated_postcode)
-            obj.latitude = result["latitude"]
-            obj.longitude = result["longitude"]
-        serializer.save()
+            # Get the existing property object
+            obj = serializer.instance
+
+            # If the postcode from the serializer doesn't match doesn't match
+            # the property objects current postcode, a change has been made and
+            # the longitude and latitude should be updated.
+            if updated_postcode != obj.postcode:
+                result = get_postcode_details(updated_postcode)
+                obj.latitude = result["latitude"]
+                obj.longitude = result["longitude"]
+            serializer.save()
+        except KeyError:
+            serializer.save()
