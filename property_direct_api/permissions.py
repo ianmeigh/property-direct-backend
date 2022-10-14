@@ -36,3 +36,18 @@ class IsSeller(permissions.BasePermission):
         elif request.user.is_seller:
             return True
         return False
+
+
+class IsOwner(permissions.BasePermission):
+    """Custom Permission to restrict view to authenticated users and object
+    action to only object owners.
+    """
+
+    def has_permission(self, request, view):
+        if request.user.is_anonymous:
+            return False
+        else:
+            return True
+
+    def has_object_permission(self, request, view, obj):
+        return obj.owner == request.user
