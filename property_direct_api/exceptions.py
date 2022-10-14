@@ -14,11 +14,11 @@ class ExternalAPIUnavailable(APIException):
 
 class PostCodeInvalid(APIException):
     status_code = 400
-    default_detail = {"error": ["Postcode not valid"]}
+    default_detail = {"postcode": ["Postcode not valid"]}
     default_code = "postcode_invalid"
 
 
 class RadiusInvalid(APIException):
     status_code = 400
-    default_detail = {"error": ["Radius not a number"]}
+    default_detail = {"radius": ["Radius not a number"]}
     default_code = "radius_invalid"
