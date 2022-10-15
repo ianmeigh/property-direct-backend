@@ -52,7 +52,7 @@ class Property(models.Model):
     price = models.PositiveIntegerField()
     image_hero = models.ImageField(
         upload_to="images/",
-        default="…/default_property_image_lwan0m",
+        default="../default_property_image_lwan0m.jpg",
         blank=True,
     )
     floorplan = models.ImageField(upload_to="images/", blank=True)
