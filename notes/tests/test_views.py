@@ -128,13 +128,13 @@ class NoteDetailViewTests(APITestCase):
 
     def test_anonymous_users_cannot_see_individual_notes(self):
         """Test an anonymous user cannot see any notes"""
-        response = self.client.get(f"/notes/{self.test_user_note.id}")
+        response = self.client.get(f"/notes/{self.test_user_note.id}/")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_user_can_see_individual_notes_they_own(self):
         """Test an authenticated user can get individual notes they own"""
         self.client.login(username="test_user", password=self.shared_password)
-        response = self.client.get(f"/notes/{self.test_user_note.id}")
+        response = self.client.get(f"/notes/{self.test_user_note.id}/")
         self.assertEqual(response.data["id"], self.test_user_note.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -145,14 +145,14 @@ class NoteDetailViewTests(APITestCase):
         self.client.login(
             username="test_seller", password=self.shared_password
         )
-        response = self.client.get(f"/notes/{self.test_user_note.id}")
+        response = self.client.get(f"/notes/{self.test_user_note.id}/")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_owner_can_edit_notes(self):
         """Test owner of a note can update it"""
         self.client.login(username="test_user", password=self.shared_password)
         response = self.client.put(
-            f"/notes/{self.test_user_note.id}",
+            f"/notes/{self.test_user_note.id}/",
             {
                 "property": self.property.id,
                 "content": "updated test note",
@@ -165,7 +165,7 @@ class NoteDetailViewTests(APITestCase):
         """Test owner of a note can delete it"""
         initial_count = Note.objects.count()
         self.client.login(username="test_user", password=self.shared_password)
-        response = self.client.delete(f"/notes/{self.test_user_note.id}")
+        response = self.client.delete(f"/notes/{self.test_user_note.id}/")
         count = Note.objects.count()
         self.assertEqual(count, initial_count - 1)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

@@ -151,13 +151,13 @@ class BookmarkDetailViewTests(APITestCase):
 
     def test_anonymous_users_cannot_see_individual_bookmarks(self):
         """Test an anonymous user cannot see any bookmarks"""
-        response = self.client.get(f"/bookmarks/{self.test_user_bookmark.id}")
+        response = self.client.get(f"/bookmarks/{self.test_user_bookmark.id}/")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_user_can_see_individual_bookmarks_they_own(self):
         """Test an authenticated user can get individual bookmarks they own"""
         self.client.login(username="test_user", password=self.shared_password)
-        response = self.client.get(f"/bookmarks/{self.test_user_bookmark.id}")
+        response = self.client.get(f"/bookmarks/{self.test_user_bookmark.id}/")
         self.assertEqual(response.data["id"], self.test_user_bookmark.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -168,7 +168,7 @@ class BookmarkDetailViewTests(APITestCase):
         self.client.login(
             username="test_seller", password=self.shared_password
         )
-        response = self.client.get(f"/bookmarks/{self.test_user_bookmark.id}")
+        response = self.client.get(f"/bookmarks/{self.test_user_bookmark.id}/")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_owner_can_delete_bookmarks(self):
@@ -176,7 +176,7 @@ class BookmarkDetailViewTests(APITestCase):
         initial_count = Bookmark.objects.count()
         self.client.login(username="test_user", password=self.shared_password)
         response = self.client.delete(
-            f"/bookmarks/{self.test_user_bookmark.id}"
+            f"/bookmarks/{self.test_user_bookmark.id}/"
         )
         count = Bookmark.objects.count()
         self.assertEqual(count, initial_count - 1)

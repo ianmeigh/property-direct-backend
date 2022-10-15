@@ -104,20 +104,20 @@ class PropertyCreateViewTests(APITestCase):
         self.client.login(
             username="test_seller", password=self.shared_password
         )
-        response = self.client.post("/property/create", self.property_obj)
+        response = self.client.post("/property/create/", self.property_obj)
         count = Property.objects.count()
         self.assertEqual(count, initial_count + 1)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_anonymous_user_cannot_create_property(self):
         """Test an anonymous user cannot create a property"""
-        response = self.client.post("/property/create", self.property_obj)
+        response = self.client.post("/property/create/", self.property_obj)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_non_seller_user_cannot_create_property(self):
         """Test an anonymous user (non-seller) cannot create a property"""
         self.client.login(username="test_user", password=self.shared_password)
-        response = self.client.post("/property/create", self.property_obj)
+        response = self.client.post("/property/create/", self.property_obj)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
@@ -189,7 +189,7 @@ class PropertyDetailViewTests(APITestCase):
     def test_can_get_property_with_valid_id(self):
         """Test an anonymous user can get property detail"""
         response = self.client.get(
-            f"/property/{self.test_seller_1_property.id}"
+            f"/property/{self.test_seller_1_property.id}/"
         )
         self.assertEqual(
             response.data["street_name"],
@@ -201,7 +201,7 @@ class PropertyDetailViewTests(APITestCase):
         """Test an anonymous get request with invalid object id will return a
         404 response
         """
-        response = self.client.get("/property/99")
+        response = self.client.get("/property/99/")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     @mock.patch("requests.get")
@@ -226,7 +226,7 @@ class PropertyDetailViewTests(APITestCase):
             username="test_seller_1", password=self.shared_password
         )
         response = self.client.put(
-            f"/property/{self.test_seller_1_property.id}",
+            f"/property/{self.test_seller_1_property.id}/",
             self.property_update_obj,
         )
         property = Property.objects.get(pk=self.test_seller_1_property.id)
@@ -243,7 +243,7 @@ class PropertyDetailViewTests(APITestCase):
             username="test_seller_1", password=self.shared_password
         )
         response = self.client.patch(
-            f"/property/{self.test_seller_1_property.id}",
+            f"/property/{self.test_seller_1_property.id}/",
             {"street_name": "test street name 1, patch"},
         )
         property = Property.objects.get(pk=self.test_seller_1_property.id)
@@ -260,7 +260,7 @@ class PropertyDetailViewTests(APITestCase):
             username="test_seller_1", password=self.shared_password
         )
         response = self.client.patch(
-            f"/property/{self.test_seller_2_property.id}",
+            f"/property/{self.test_seller_2_property.id}/",
             {"street_name": "test street name 2, updated"},
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -268,7 +268,7 @@ class PropertyDetailViewTests(APITestCase):
     def test_anonymous_user_cannot_update_property(self):
         """Test an anonymous user cannot update a property"""
         response = self.client.patch(
-            f"/property/{self.test_seller_2_property.id}",
+            f"/property/{self.test_seller_2_property.id}/",
             self.property_update_obj,
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -277,7 +277,7 @@ class PropertyDetailViewTests(APITestCase):
         """Test an anonymous user (non-seller) cannot update a property"""
         self.client.login(username="test_user", password=self.shared_password)
         response = self.client.patch(
-            f"/property/{self.test_seller_2_property.id}",
+            f"/property/{self.test_seller_2_property.id}/",
             self.property_update_obj,
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -289,7 +289,7 @@ class PropertyDetailViewTests(APITestCase):
         )
         initial_count = Property.objects.count()
         response = self.client.delete(
-            f"/property/{self.test_seller_1_property.id}"
+            f"/property/{self.test_seller_1_property.id}/"
         )
         count = Property.objects.count()
         self.assertEqual(count, initial_count - 1)
@@ -301,14 +301,14 @@ class PropertyDetailViewTests(APITestCase):
             username="test_seller_1", password=self.shared_password
         )
         response = self.client.delete(
-            f"/property/{self.test_seller_2_property.id}"
+            f"/property/{self.test_seller_2_property.id}/"
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_anonymous_cannot_delete_property(self):
         """Test an anonymous user cannot delete a property"""
         response = self.client.delete(
-            f"/property/{self.test_seller_1_property.id}"
+            f"/property/{self.test_seller_1_property.id}/"
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -318,6 +318,6 @@ class PropertyDetailViewTests(APITestCase):
             username="test_user_1", password=self.shared_password
         )
         response = self.client.delete(
-            f"/property/{self.test_seller_1_property.id}"
+            f"/property/{self.test_seller_1_property.id}/"
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

@@ -92,7 +92,7 @@ class PropertySerializersTests(APITestCase):
         login = self.client.login(
             username="test_seller", password=self.shared_password
         )
-        response = self.client.post("/property/create", self.property_obj)
+        response = self.client.post("/property/create/", self.property_obj)
         self.assertRaises(ValidationError)
         self.assertEqual(
             "Please enter a valid UK postcode",
@@ -115,7 +115,7 @@ class PropertySerializersTests(APITestCase):
         login = self.client.login(
             username="test_seller", password=self.shared_password
         )
-        response = self.client.post("/property/create", self.property_obj)
+        response = self.client.post("/property/create/", self.property_obj)
         self.assertRaises(ValidationError)
         self.assertEqual(
             (
@@ -146,7 +146,7 @@ class PropertySerializersTests(APITestCase):
             username="test_seller", password=self.shared_password
         )
         response = self.client.post(
-            "/property/create", self.property_obj_with_invalid_image_and_file
+            "/property/create/", self.property_obj_with_invalid_image_and_file
         )
         self.assertRaises(ValidationError)
         self.assertIn(
