@@ -1,4 +1,7 @@
+import re
+
 from followers.models import Follower
+from property_direct_api.utils import validate_image_util
 from rest_framework import serializers
 
 from .models import Profile
@@ -24,8 +27,9 @@ class ProfileSerializer(serializers.ModelSerializer):
         return self.context["request"].user == obj.owner
 
     def get_following_id(self, obj):
-        """Returns the id of the follower object, for each Profile being followed by
-        currently authenticated User"""
+        """Returns the id of the follower object, for each Profile being
+        followed by currently authenticated User.
+        """
         user = self.context["request"].user
         if user.is_authenticated:
             following = Follower.objects.filter(
@@ -33,6 +37,37 @@ class ProfileSerializer(serializers.ModelSerializer):
             ).first()
             return following.id if following else None
         return None
+
+    def validate_image(self, value):
+        valid_image = validate_image_util(value)
+        return valid_image
+
+    def validate_email(self, value):
+        # CREDIT: Basic regular expression for email address
+        # AUTHOR: Róbert Papp
+        # URL:    https://emailregex.com/ - http://disq.us/p/10frbr8
+        pattern = r"\S+@\S+\.\S+"
+
+        # TODO: MailGun Email Validation
+        if re.match(pattern, value):
+            return value
+        raise serializers.ValidationError(
+            "Please enter a valid email address."
+        )
+
+    def validate_telephone_mobile(self, value):
+        # CREDIT: Regular expression for UK mobile number adapted from this
+        #         source
+        # AUTHOR: BlackVegetable
+        # URL:    https://stackoverflow.com/a/16405304
+        pattern = r"^(07[\d]{9})$"
+
+        if re.match(pattern, value):
+            return value
+        raise serializers.ValidationError(
+            "Please enter a valid UK (11-digit) mobile number, starting with "
+            "zero, excluding +44, with no spaces."
+        )
 
     class Meta:
         model = Profile

@@ -4,10 +4,11 @@ from property_direct_api.exceptions import (
     ExternalAPIUnavailable,
     PostCodeInvalid,
 )
+from property_direct_api.utils import validate_image_util
 from rest_framework import serializers
 
 from .models import Property
-from .utils import get_postcode_details, validate_property_image
+from .utils import get_postcode_details
 
 
 class PropertySerializer(serializers.ModelSerializer):
@@ -40,15 +41,15 @@ class PropertySerializer(serializers.ModelSerializer):
         return None
 
     def validate_image_hero(self, value):
-        valid_image = validate_property_image(value)
+        valid_image = validate_image_util(value)
         return valid_image
 
     def validate_floorplan(self, value):
-        valid_image = validate_property_image(value)
+        valid_image = validate_image_util(value)
         return valid_image
 
     def validate_epc(self, value):
-        valid_image = validate_property_image(value)
+        valid_image = validate_image_util(value)
         return valid_image
 
     def validate_postcode(self, value):

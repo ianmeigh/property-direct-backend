@@ -1,9 +1,14 @@
 from django.db.models import Count
 from property_direct_api.permissions import (
+    IsOwner,
     IsProfileOwnerOrViewingSellerProfile,
 )
 from rest_framework.filters import OrderingFilter
-from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import (
+    DestroyAPIView,
+    ListAPIView,
+    RetrieveUpdateAPIView,
+)
 
 from .models import Profile
 from .serializers import ProfileSerializer, ProfileSerializerAuthenticated
@@ -67,3 +72,15 @@ class ProfileDetailView(RetrieveUpdateAPIView):
             return ProfileSerializerAuthenticated
         else:
             return ProfileSerializer
+
+
+class ProfileDeleteView(DestroyAPIView):
+    """Profile Delete (Destroy) View
+
+    - Custom permissions class to restrict deletion to object owners.
+    - Signal linked to this event will delete the profile owners user account
+      (Account > signals.py).
+    """
+
+    queryset = Profile.objects.all()
+    permission_classes = [IsOwner]
