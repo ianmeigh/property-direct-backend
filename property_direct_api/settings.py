@@ -38,12 +38,12 @@ ALLOWED_HOSTS = environ.get("ALLOWED_HOSTS", "127.0.0.1").split(",")
 
 # CREDIT: CORS_ALLOWED_ORIGINS list adapted from @pakkONE, posted in the Code
 #         Institute Slack Community.
-if environ.get("DEV_ENVIRONMENT"):
-    CORS_ALLOWED_ORIGINS = [
-        environ.get("CLIENT_ORIGIN"),
-        environ.get("CLIENT_ORIGIN_DEV"),
-    ]
+CORS_ALLOWED_ORIGINS = [
+    environ.get("CLIENT_ORIGIN"),
+    environ.get("CLIENT_ORIGIN_DEV"),
+]
 
+CORS_ALLOW_CREDENTIALS = True
 
 # Cloudinary Configuration
 CLOUDINARY_STORAGE = {"CLOUDINARY_URL": environ.get("CLOUDINARY_URL")}
