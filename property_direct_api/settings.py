@@ -43,6 +43,7 @@ CORS_ALLOWED_ORIGINS = [
     environ.get("CLIENT_ORIGIN_DEV"),
 ]
 
+CORS_ALLOW_CREDENTIALS = True
 
 # Cloudinary Configuration
 CLOUDINARY_STORAGE = {"CLOUDINARY_URL": environ.get("CLOUDINARY_URL")}
