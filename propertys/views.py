@@ -190,7 +190,9 @@ class PropertyDetailView(RetrieveUpdateDestroyAPIView):
 
     serializer_class = PropertySerializer
     permission_classes = [IsOwnerOrReadOnly]
-    queryset = Property.objects.all()
+    queryset = Property.objects.annotate(
+        bookmarks_count=Count("bookmarks", distinct=True),
+    ).order_by("-created_at")
 
     def perform_update(self, serializer):
         """Add extra information before the object is saved (updated).
