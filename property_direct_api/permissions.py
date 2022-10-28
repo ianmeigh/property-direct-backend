@@ -51,3 +51,17 @@ class IsOwner(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return obj.owner == request.user
+
+
+class AnonSafeMethodsOnly(permissions.BasePermission):
+    """Custom Permission to allow anonymous users access to a view using safe
+    methods only, unrestricted access to authenticated users.
+    """
+
+    def has_permission(self, request, view):
+        if request.user.is_anonymous and (
+            request.method not in permissions.SAFE_METHODS
+        ):
+            return False
+        else:
+            return True
