@@ -22,6 +22,13 @@ class PropertySerializer(serializers.ModelSerializer):
     is_owner = serializers.SerializerMethodField()
     profile_id = serializers.ReadOnlyField(source="owner.profile.id")
     profile_image = serializers.ReadOnlyField(source="owner.profile.image.url")
+    profile_telephone_mobile = serializers.ReadOnlyField(
+        source="owner.profile.telephone_mobile"
+    )
+    profile_telephone_landline = serializers.ReadOnlyField(
+        source="owner.profile.telephone_landline"
+    )
+    profile_email = serializers.ReadOnlyField(source="owner.profile.email")
     bookmark_id = serializers.SerializerMethodField()
     bookmarks_count = serializers.ReadOnlyField()
     longitude = serializers.ReadOnlyField()
@@ -75,6 +82,9 @@ class PropertySerializer(serializers.ModelSerializer):
             "profile_id",
             "profile_image",
             "property_name",
+            "profile_telephone_mobile",
+            "profile_telephone_landline",
+            "profile_email",
             "property_number",
             "street_name",
             "locality",
