@@ -16,6 +16,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     """
 
     owner = serializers.ReadOnlyField(source="owner.username")
+    owner_id = serializers.ReadOnlyField(source="owner.id")
     is_owner = serializers.SerializerMethodField()
     following_id = serializers.SerializerMethodField()
     property_count = serializers.ReadOnlyField()
@@ -48,7 +49,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         # URL:    https://emailregex.com/ - http://disq.us/p/10frbr8
         pattern = r"\S+@\S+\.\S+"
 
-        # TODO: MailGun Email Validation
         if re.match(pattern, value):
             return value
         raise serializers.ValidationError(
@@ -74,6 +74,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "owner",
+            "owner_id",
             "is_owner",
             "name",
             "description",
