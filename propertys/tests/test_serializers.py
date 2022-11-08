@@ -89,7 +89,7 @@ class PropertySerializersTests(APITestCase):
         }
         mock_get.return_value = the_response
 
-        login = self.client.login(
+        self.client.login(
             username="test_seller", password=self.shared_password
         )
         response = self.client.post("/property/create/", self.property_obj)
@@ -112,7 +112,7 @@ class PropertySerializersTests(APITestCase):
         }
         mock_get.return_value = the_response
 
-        login = self.client.login(
+        self.client.login(
             username="test_seller", password=self.shared_password
         )
         response = self.client.post("/property/create/", self.property_obj)
@@ -142,7 +142,7 @@ class PropertySerializersTests(APITestCase):
         }
         mock_get.return_value = the_response
 
-        login = self.client.login(
+        self.client.login(
             username="test_seller", password=self.shared_password
         )
         response = self.client.post(

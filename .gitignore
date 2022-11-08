@@ -1,4 +1,11 @@
+# Project
 .venv
 .env
 __pycache__/
 *.sqlite3
+
+# Testing
+htmlcov/
+.coverage
+setup.cfg
+.vscode

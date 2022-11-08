@@ -1,13 +1,13 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.generics import (
+    ListCreateAPIView,
+    RetrieveUpdateDestroyAPIView,
+)
+
 from property_direct_api.mixins import IsOwnerQuerysetFilter
 from property_direct_api.permissions import (
     AnonSafeMethodsOnly,
     IsOwnerOrReadOnly,
-)
-from rest_framework import permissions
-from rest_framework.generics import (
-    ListCreateAPIView,
-    RetrieveUpdateDestroyAPIView,
 )
 
 from .models import Note
