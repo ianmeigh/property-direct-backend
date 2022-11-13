@@ -51,7 +51,7 @@ Development tasks for the API were created as issues and linked to the projects 
 
 ## Database Schema
 
-Models were created based on the database schema design as below. The CustomUser model was created first as this extended the AbstractUser class to allowed a Seller role to be added to accounts to septate functionality. The remaining models were then created as required by the user stories.
+Models were created based on the database schema design as below. The CustomUser model was created first as this extended the AbstractUser class to allowed a Seller role to be added to accounts to separate functionality. The remaining models were then created as required by the user stories.
 
 ![Image of Database Schema](docs/database-schema-v2.png)
 
@@ -64,12 +64,12 @@ The original database schema can be viewed [here](docs/database-schema-v1.png) a
 - Articles to allow the site owners to post content about property sales and site usage for users.
 - Article Comments to interact with users, gauge article response and improve future content.
 - Automate the addition of energy performance certificates to properties by leveraging the UK Governments [Domestic Energy Performance Certificates API](https://epc.opendatacommunities.org/docs/api/domestic).
-- Direct messaging between users and sellers to facilitate property sales withing the frontend application.
+- Direct messaging between users and sellers to facilitate property sales within the frontend application.
 - Match users with law firms to facilitate sale completion and provide fee comparison services.
 - Seller ratings to build trust in brands and discourage poor service.
 - Implement the Google geocoding service as to provide redundancy in the event the primary source of information experiences downtime.
   - To restrict the use of the Google Geocoding API key requires an IP address. This requires the use of [Heroku Proximo](https://devcenter.heroku.com/articles/proximo) which has a small cost attached.
-  - Implementation was dreamed out of scope at this stage of development due to the consistent reliability of the primary API ([postcodes.io](https://postcodes.io)) and the scale of this project.
+  - Implementation was deemed out of scope at this stage of development due to the consistent reliability of the primary API ([postcodes.io](https://postcodes.io)) and the scale of this project.
   - The use of the [GeoPy](https://geopy.readthedocs.io/en/stable/), which allows connection to multiple third-party geocoding services, was also explored and will be considered for future use if API reliability becomes an issue.
   - Search auto-complete and the use of places (City or Region) rather than postcode.
 
@@ -87,7 +87,7 @@ Please see the [click here](https://github.com/ianmeigh/property-direct-backend/
 
 - Python
 - [Django](https://pypi.org/project/Django/3.2.14/) - High-level Python Web framework used to develop the project.
-- [djangorestframework](https://pypi.org/project/djangorestframework/3.14.0/) - Toolkit for building web API's with Dajngo.
+- [djangorestframework](https://pypi.org/project/djangorestframework/3.14.0/) - Toolkit for building web API's with Django.
 
 ### Python Modules Used
 
@@ -157,7 +157,7 @@ repository by using the following steps...
 
 ### Making a Local Clone
 
-**NOTE**: It is a requirement of the is project that you have Python version 3.8 or higher installed locally.
+**NOTE**: It is a requirement of the project that you have Python version 3.8 or higher installed locally.
 
 1. Log in to GitHub and locate the [GitHub Repository](https://github.com/ianmeigh/property-direct-backend).
 1. Under the repository name, click "Code".
@@ -185,7 +185,7 @@ repository by using the following steps...
 
 1. Change the current working directory to the cloned project folder (this will be a child directory in the location you cloned the project).
 
-1. It is recommended to use a virtual environment during development ([learn more about virtual environments](https://realpython.com/python-virtual-environments-a-primer/)). If you would prefer not to use on please skip the following steps:
+1. It is recommended to use a virtual environment during development ([learn more about virtual environments](https://realpython.com/python-virtual-environments-a-primer/)). If you would prefer not to use one please skip the following steps:
     1. Create a virtual environment in the projects working directory by entering the following command in the same terminal window used for the steps above `python3 -m venv .venv`.
     1. Before use, the virtual environment will need to be activated using the command `source .venv/bin/activate` in the same terminal window used previously.
 1. Packages required by the project can now using the command `pip install -r requirements.txt`
